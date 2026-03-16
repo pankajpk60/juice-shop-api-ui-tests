@@ -51,10 +51,15 @@ class JuiceTest2 {
         driver.get(baseUrl + "/#/login");
 
         // TODO Dismiss popup (click close)
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        driver.findElement(By.cssSelector("button[aria-label='Close Welcome Banner']")).click();
-        driver.findElement(By.cssSelector("a[aria-label='dismiss cookie message']")).click();
+        WebElement WelcomeBannerPopup = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("button[aria-label='Close Welcome Banner']")));
+        WelcomeBannerPopup.click();
+
+        WebElement CookiePopup = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("a[aria-label='dismiss cookie message']")));
+        CookiePopup.click();
 
 
         // Login with credentials
@@ -72,7 +77,7 @@ class JuiceTest2 {
         driver.findElement(By.xpath("//textarea[@placeholder='What did you like or dislike?']")).sendKeys("My first Review");
 
         // Wait for the Submit button to be clickable before clicking
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
         WebElement WaitForSubmit = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
                         By.xpath("//span[text()=' Submit ']")
@@ -140,7 +145,6 @@ class JuiceTest2 {
                 .when()
                 .get(baseUrl + "/rest/products/1/reviews")
                 .then()
-                .log().all()
                 .statusCode(200)
                 .body("data.message", hasItem(review));
     }
