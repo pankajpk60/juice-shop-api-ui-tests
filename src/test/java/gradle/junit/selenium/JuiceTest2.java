@@ -73,7 +73,11 @@ class JuiceTest2 {
         loginButton.click();
 
         // TODO Navigate to product and post review
-        driver.findElement(By.xpath("(//div[contains(@class,'product')])[1]")).click();
+        WebElement FirstProduct=wait.until(ExpectedConditions.visibilityOfElementLocated(
+                                By.xpath("//img[@alt='Apple Juice (1000ml)']")));
+        FirstProduct.click();
+
+
         driver.findElement(By.xpath("//textarea[@placeholder='What did you like or dislike?']")).sendKeys("My first Review");
 
         // Wait for the Submit button to be clickable before clicking
