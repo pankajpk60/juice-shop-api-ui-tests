@@ -3,6 +3,7 @@ package gradle.junit.selenium;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import juiceshop.pageobjects.LoginPage;
 import juiceshop.pageobjects.ProductPage;
+import juiceshop.utilsobjects.DataReader;
 import juiceshop.utilsobjects.waitUtils;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
@@ -36,9 +37,9 @@ class JuiceShopTest {
         //customer = new Customer.Builder().build();
 
         customer = new Customer.Builder()
-                .setEmail("pankajpathak1988@gmail.com")
-                .setPassword("Balegere@123")
-                .setSecurityAnswer("titanic")
+                .setEmail(DataReader.get("email"))
+                .setPassword(DataReader.get("password"))
+                .setSecurityAnswer(DataReader.get("securityAnswer"))
                 .build();
     }
 
@@ -50,8 +51,8 @@ class JuiceShopTest {
     //TODO Task2: Login and post a product review using Selenium
     @Test
     void loginAndPostProductReviewViaUi() {
-        String productName = "Apple Pomace";
-        String reviewComment = "Good Experience";
+        String productName = DataReader.get("productName");
+        String reviewComment = DataReader.get("reviewComment");
         driver.get(baseUrl + "/#/login");
         LoginPage loginPage = new LoginPage(driver);
 
@@ -76,7 +77,7 @@ class JuiceShopTest {
 
     // TODO Task3: Login and post a product review using the Juice Shop API
     @Test
-    @Disabled
+
     void loginAndPostProductReviewViaApi() {
 
 
@@ -101,7 +102,7 @@ class JuiceShopTest {
         // TODO Use token to post review to product
 
 
-        String review = "This review is submitted by API call";
+        String review = DataReader.get("apiReview");
 
         given()
                 .header("Content-Type", "application/json")
