@@ -26,6 +26,7 @@ public class ProductPage extends waitUtils {
     By allproductsBy = By.cssSelector("div[aria-label='Click for more information about the product']");
     By ReviewPage = By.xpath("//textarea[@placeholder='What did you like or dislike?']");
     By SubmitButton=By.xpath("//span[text()=' Submit ']");
+    By ReviewSubmitConfirmation=By.xpath("//span[text()='You review has been saved.']");
 
 
 
@@ -61,5 +62,13 @@ public class ProductPage extends waitUtils {
 
     }
 
+
+    public void ReviewSubmitConfirmation()
+    {
+        WebElement WaitForReviewMessage=WaitForElement(ReviewSubmitConfirmation);
+        assert WaitForReviewMessage.getText().contains("You review has been saved.");
+
+
+    }
 
 }

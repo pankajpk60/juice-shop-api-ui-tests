@@ -3,6 +3,7 @@ package gradle.junit.selenium;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import juiceshop.pageobjects.LoginPage;
 import juiceshop.pageobjects.ProductPage;
+import juiceshop.utilsobjects.waitUtils;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -24,6 +25,7 @@ class JuiceShopTest {
 
     static WebDriver driver;
     static Customer customer;
+
 
     @BeforeAll
     static void setup() {
@@ -49,7 +51,7 @@ class JuiceShopTest {
     @Test
     void loginAndPostProductReviewViaUi() {
         String productName = "Apple Pomace";
-        String reviewComment="Good Experience";
+        String reviewComment = "Good Experience";
         driver.get(baseUrl + "/#/login");
         LoginPage loginPage = new LoginPage(driver);
 
@@ -57,32 +59,19 @@ class JuiceShopTest {
         loginPage.CloseWelcomebannerpopup();//calling function to close welcome banner popup
         loginPage.CloseCookiebannerpopup();//Calling function to close cookie banner popup
 
-
         // Login with credentials
-
-
         loginPage.LoginJuiceShopApplication(customer.getEmail(), customer.getPassword());
-
 
         // TODO Navigate to product and post review
 
-       ProductPage productPage=new ProductPage(driver);
-       List<WebElement> AllProduct= productPage.getproductlist();
-       productPage.LandOnReviewPageForSelectedProduct(productName);
-       productPage.SubmitReviewForSelectedProduct(reviewComment);
+        ProductPage productPage = new ProductPage(driver);
+        List<WebElement> AllProduct = productPage.getproductlist();
+        productPage.LandOnReviewPageForSelectedProduct(productName);
+        productPage.SubmitReviewForSelectedProduct(reviewComment);
 
 
-//        // TODO Assert that the review has been created successfully
-//
-//        //WebElement reviewMessage = driver.findElement(By.xpath("//span[text()='You review has been saved.']"));
-//        WebElement WaitForReviewMessage = wait.until(
-//                ExpectedConditions.visibilityOfElementLocated(
-//                        By.xpath("//span[text()='You review has been saved.']")
-//                )
-//        );
-//
-//        assert WaitForReviewMessage.getText().contains("You review has been saved.");
-
+        // TODO Assert that the review has been created successfully
+        productPage.ReviewSubmitConfirmation();
     }
 
     // TODO Task3: Login and post a product review using the Juice Shop API
