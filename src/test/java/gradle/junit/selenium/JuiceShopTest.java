@@ -1,10 +1,11 @@
 package gradle.junit.selenium;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import juiceshop.pageobjects.LoginPage;
+import juiceshop.pageobjects.ProductPage;
+import juiceshop.utilsobjects.DataReader;
+import juiceshop.utilsobjects.waitUtils;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,18 +13,20 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-
 import java.time.Duration;
+import java.util.List;
 
-class JuiceTest2 {
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasItem;
+
+class JuiceShopTest {
     private static String address = "localhost";
     private static String port = "3000";
     private static String baseUrl = String.format("http://%s:%s", address, port);
 
     static WebDriver driver;
     static Customer customer;
+
 
     @BeforeAll
     static void setup() {
@@ -34,9 +37,9 @@ class JuiceTest2 {
         //customer = new Customer.Builder().build();
 
         customer = new Customer.Builder()
-                .setEmail("pankajpathak1988@gmail.com")
-                .setPassword("Balegere@123")
-                .setSecurityAnswer("titanic")
+                .setEmail(DataReader.get("email"))
+                .setPassword(DataReader.get("password"))
+                .setSecurityAnswer(DataReader.get("securityAnswer"))
                 .build();
     }
 
@@ -47,68 +50,34 @@ class JuiceTest2 {
 
     //TODO Task2: Login and post a product review using Selenium
     @Test
-    @Disabled
-
     void loginAndPostProductReviewViaUi() {
+        String productName = DataReader.get("productName");
+        String reviewComment = DataReader.get("reviewComment");
         driver.get(baseUrl + "/#/login");
+        LoginPage loginPage = new LoginPage(driver);
 
         // TODO Dismiss popup (click close)
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-        WebElement WelcomeBannerPopup = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("button[aria-label='Close Welcome Banner']")));
-        WelcomeBannerPopup.click();
-
-        WebElement CookiePopup = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("a[aria-label='dismiss cookie message']")));
-        CookiePopup.click();
-
+        loginPage.CloseWelcomebannerpopup();//calling function to close welcome banner popup
+        loginPage.CloseCookiebannerpopup();//Calling function to close cookie banner popup
 
         // Login with credentials
-
-        WebElement emailField = driver.findElement(By.name("email"));
-        WebElement passwordField = driver.findElement(By.name("password"));
-        WebElement loginButton = driver.findElement(By.id("loginButton"));
-
-        emailField.sendKeys(customer.getEmail());
-        passwordField.sendKeys(customer.getPassword());
-        loginButton.click();
+        loginPage.LoginJuiceShopApplication(customer.getEmail(), customer.getPassword());
 
         // TODO Navigate to product and post review
-        WebElement FirstProduct=wait.until(ExpectedConditions.visibilityOfElementLocated(
-                                By.xpath("//img[@alt='Apple Juice (1000ml)']")));
-        FirstProduct.click();
 
-
-        driver.findElement(By.xpath("//textarea[@placeholder='What did you like or dislike?']")).sendKeys("My first Review");
-
-        // Wait for the Submit button to be clickable before clicking
-
-        WebElement WaitForSubmit = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//span[text()=' Submit ']")
-                )
-        );
-        WaitForSubmit.click();
-        driver.findElement(By.xpath("//span[text()=' Close']")).click();
+        ProductPage productPage = new ProductPage(driver);
+        List<WebElement> AllProduct = productPage.getproductlist();
+        productPage.LandOnReviewPageForSelectedProduct(productName);
+        productPage.SubmitReviewForSelectedProduct(reviewComment);
 
 
         // TODO Assert that the review has been created successfully
-
-        //WebElement reviewMessage = driver.findElement(By.xpath("//span[text()='You review has been saved.']"));
-        WebElement WaitForReviewMessage = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//span[text()='You review has been saved.']")
-                )
-        );
-
-        assert WaitForReviewMessage.getText().contains("You review has been saved.");
-
+        productPage.ReviewSubmitConfirmation();
     }
 
     // TODO Task3: Login and post a product review using the Juice Shop API
     @Test
-    @Disabled
+
     void loginAndPostProductReviewViaApi() {
 
 
@@ -133,7 +102,7 @@ class JuiceTest2 {
         // TODO Use token to post review to product
 
 
-        String review = "This review is submitted by API call";
+        String review = DataReader.get("apiReview");
 
         given()
                 .header("Content-Type", "application/json")
