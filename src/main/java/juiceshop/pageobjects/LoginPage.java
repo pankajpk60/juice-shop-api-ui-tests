@@ -1,13 +1,13 @@
 package juiceshop.pageobjects;
 
-import juiceshop.utilsobjects.waitUtils;
+import juiceshop.utilsobjects.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class LoginPage extends waitUtils {
+public class LoginPage extends WaitUtils {
 
     private WebDriver driver;
 
@@ -27,10 +27,10 @@ public class LoginPage extends waitUtils {
     WebElement loginButton;
 
 
-    By welcomebanner = By.cssSelector("button[aria-label='Close Welcome Banner']");
-    By cookiebanner = By.cssSelector("a[aria-label='dismiss cookie message']");
+    By welcomeBanner = By.cssSelector("button[aria-label='Close Welcome Banner']");
+    By cookieBanner = By.cssSelector("a[aria-label='dismiss cookie message']");
 
-    public void LoginJuiceShopApplication(String Email, String Password) {
+    public void loginJuiceShopApplication(String Email, String Password) {
         emailField.sendKeys(Email);
         passwordField.sendKeys(Password);
         loginButton.click();
@@ -38,17 +38,17 @@ public class LoginPage extends waitUtils {
     }
 
 
-    public void CloseWelcomebannerpopup() {
+    public void closeWelcomeBannerPopup() {
 
-        WebElement WelcomePopup = WaitForElement(welcomebanner);
-        WelcomePopup.click();
+        WebElement welcomePopup = waitForElement(welcomeBanner);
+        welcomePopup.click();
 
     }
 
-    public void CloseCookiebannerpopup() {
+    public void closeCookieBannerPopup() {
 
-        WebElement CookiePopup = WaitForElement(cookiebanner);
-        CookiePopup.click();
+        WebElement cookiePopup = waitForElement(cookieBanner);
+        cookiePopup.click();
 
 
     }
