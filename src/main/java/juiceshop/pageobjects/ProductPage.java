@@ -25,7 +25,7 @@ public class ProductPage extends WaitUtils {
 
     By allProductsBy = By.cssSelector("div[aria-label='Click for more information about the product']");
     By reviewPage = By.xpath("//textarea[@placeholder='What did you like or dislike?']");
-    By submitButton=By.xpath("//span[text()=' Submit ']");
+    By submitButton=By.id("submitButton");
     By reviewSubmitConfirmation=By.xpath("//span[text()='You review has been saved.']");
 
 

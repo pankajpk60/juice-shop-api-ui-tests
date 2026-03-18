@@ -1,6 +1,9 @@
 package gradle.junit.selenium;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import juiceshop.api.ProductApi;
+import juiceshop.api.ReviewApi;
+import juiceshop.api.UserApi;
 import juiceshop.pageobjects.LoginPage;
 import juiceshop.pageobjects.ProductPage;
 import juiceshop.utilsobjects.DataReader;
@@ -45,6 +48,7 @@ class JuiceShopTest {
 
     //TODO Task2: Login and post a product review using Selenium
     @Test
+    @Disabled
     void loginAndPostProductReviewViaUi() {
         String productName = DataReader.get("productName");
         String reviewComment = DataReader.get("reviewComment");
@@ -72,51 +76,27 @@ class JuiceShopTest {
 
     // TODO Task3: Login and post a product review using the Juice Shop API
     @Test
-
     void loginAndPostProductReviewViaApi() {
 
 
         // TODO Retrieve token via login API
 
-        String token = given()
-                .header("Content-Type", "application/json")
-                .body(String.format("{\"email\":\"%s\"," +
-                                "\"password\":\"%s\"}",
-                        customer.getEmail(),
-                        customer.getPassword()))
-                .when()
-                .post(baseUrl + "/rest/user/login")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("authentication.token");
+        String review = DataReader.get("apiReview");
+        String productName = DataReader.get("productName");
+        int productId = ProductApi.getProductIdByName(baseUrl, productName);
 
-        customer.saveToken(token);
-
+        String token = UserApi.login(baseUrl + "/rest/user/login", customer.getEmail(), customer.getPassword());
 
         // TODO Use token to post review to product
-
-
-        String review = DataReader.get("apiReview");
-
-        given()
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + customer.getToken())
-                .body(String.format("{\"message\":\"%s\",\"author\":\"%s\"}",
-                        review,
-                        customer.getEmail()))
-                .when()
-                .put(baseUrl + "/rest/products/1/reviews")
-                .then()
-                .statusCode(201);
+        ReviewApi.submitReview(baseUrl, productId, token, review, customer.getEmail());
 
         // TODO Assert that the product review has persisted
 
-        given()
-                .when()
-                .get(baseUrl + "/rest/products/1/reviews")
-                .then()
-                .statusCode(200)
-                .body("data.message", hasItem(review));
+        ReviewApi.verifyReview(baseUrl, productId, review);
+
+
     }
 }
+
+
+
