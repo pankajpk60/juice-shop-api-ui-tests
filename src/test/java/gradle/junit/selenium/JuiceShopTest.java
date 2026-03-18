@@ -4,16 +4,11 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import juiceshop.pageobjects.LoginPage;
 import juiceshop.pageobjects.ProductPage;
 import juiceshop.utilsobjects.DataReader;
-import juiceshop.utilsobjects.waitUtils;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -57,22 +52,22 @@ class JuiceShopTest {
         LoginPage loginPage = new LoginPage(driver);
 
         // TODO Dismiss popup (click close)
-        loginPage.CloseWelcomebannerpopup();//calling function to close welcome banner popup
-        loginPage.CloseCookiebannerpopup();//Calling function to close cookie banner popup
+        loginPage.closeWelcomeBannerPopup();//calling function to close welcome banner popup
+        loginPage.closeCookieBannerPopup();//Calling function to close cookie banner popup
 
         // Login with credentials
-        loginPage.LoginJuiceShopApplication(customer.getEmail(), customer.getPassword());
+        loginPage.loginJuiceShopApplication(customer.getEmail(), customer.getPassword());
 
         // TODO Navigate to product and post review
 
         ProductPage productPage = new ProductPage(driver);
-        List<WebElement> AllProduct = productPage.getproductlist();
-        productPage.LandOnReviewPageForSelectedProduct(productName);
-        productPage.SubmitReviewForSelectedProduct(reviewComment);
+        List<WebElement> allProducts = productPage.getProductList();
+        productPage.landOnReviewPageForSelectedProduct(productName);
+        productPage.submitReviewForSelectedProduct(reviewComment);
 
 
         // TODO Assert that the review has been created successfully
-        productPage.ReviewSubmitConfirmation();
+        productPage.reviewSubmitConfirmation();
     }
 
     // TODO Task3: Login and post a product review using the Juice Shop API

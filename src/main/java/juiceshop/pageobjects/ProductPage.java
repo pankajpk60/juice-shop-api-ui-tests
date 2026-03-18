@@ -1,6 +1,6 @@
 package juiceshop.pageobjects;
 
-import juiceshop.utilsobjects.waitUtils;
+import juiceshop.utilsobjects.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -9,7 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import java.util.List;
 
-public class ProductPage extends waitUtils {
+public class ProductPage extends WaitUtils {
 
     private WebDriver driver;
 
@@ -20,53 +20,53 @@ public class ProductPage extends waitUtils {
     }
 
     @FindBy(css = "div[aria-label='Click for more information about the product']")
-    List<WebElement> allproducts;
+    List<WebElement> allProducts;
 
 
-    By allproductsBy = By.cssSelector("div[aria-label='Click for more information about the product']");
-    By ReviewPage = By.xpath("//textarea[@placeholder='What did you like or dislike?']");
-    By SubmitButton=By.xpath("//span[text()=' Submit ']");
-    By ReviewSubmitConfirmation=By.xpath("//span[text()='You review has been saved.']");
+    By allProductsBy = By.cssSelector("div[aria-label='Click for more information about the product']");
+    By reviewPage = By.xpath("//textarea[@placeholder='What did you like or dislike?']");
+    By submitButton=By.xpath("//span[text()=' Submit ']");
+    By reviewSubmitConfirmation=By.xpath("//span[text()='You review has been saved.']");
 
 
 
-    public List<WebElement> getproductlist() {
+    public List<WebElement> getProductList() {
 
-        WaitForElement(allproductsBy);
-        return allproducts;
+        waitForElement(allProductsBy);
+        return allProducts;
 
 
     }
 
     public WebElement productByName(String productName) {
 
-        WebElement filteredProduct = getproductlist().stream().filter(product -> product.findElement(By.cssSelector(".item-name")).getText().trim().equals(productName)).findFirst().orElse(null);
+        WebElement filteredProduct = getProductList().stream().filter(product -> product.findElement(By.cssSelector(".item-name")).getText().trim().equals(productName)).findFirst().orElse(null);
         return filteredProduct;
 
     }
 
 
-    public void LandOnReviewPageForSelectedProduct(String productName) {
+    public void landOnReviewPageForSelectedProduct(String productName) {
         WebElement prod = productByName(productName);
         prod.click();
 
 
     }
 
-    public void SubmitReviewForSelectedProduct(String reviewComment) {
-        WaitForElement(ReviewPage);
-        driver.findElement(ReviewPage).sendKeys(reviewComment);
-        WaitForElement(SubmitButton);
-        driver.findElement(SubmitButton).click();
+    public void submitReviewForSelectedProduct(String reviewComment) {
+        waitForElement(reviewPage);
+        driver.findElement(reviewPage).sendKeys(reviewComment);
+        waitForElement(submitButton);
+        driver.findElement(submitButton).click();
         driver.findElement(By.xpath("//span[text()=' Close']")).click();
 
     }
 
 
-    public void ReviewSubmitConfirmation()
+    public void reviewSubmitConfirmation()
     {
-        WebElement WaitForReviewMessage=WaitForElement(ReviewSubmitConfirmation);
-        assert WaitForReviewMessage.getText().contains("You review has been saved.");
+        WebElement waitForReviewMessage=waitForElement(reviewSubmitConfirmation);
+        assert waitForReviewMessage.getText().contains("You review has been saved.");
 
 
     }
